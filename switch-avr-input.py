@@ -53,4 +53,6 @@ for device in iter(monitor.poll, None):
 			switch_input(target_input)
 
 	if device.action == 'remove':
-		switch_input(get_last_input())
+		current_input = get_current_input()
+		if current_input == target_input:
+			switch_input(get_last_input())
