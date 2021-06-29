@@ -1,0 +1,11 @@
+Description=BluezALSA aplay service
+Requires=bluealsa.service
+After=bluealsa.service
+
+[Service]
+Type=simple
+User=root
+ExecStart=bluealsa-aplay 00:00:00:00:00:00
+
+[Install]
+WantedBy=multi-user.target

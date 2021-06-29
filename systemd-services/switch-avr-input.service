@@ -1,0 +1,11 @@
+[Unit]
+Description=AVR Input Switcher based on Bluetooth connections
+After=multi-user.target
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/usr/bin/python3 /home/pi/switch-avr-input.py
+
+[Install]
+WantedBy=multi-user.target

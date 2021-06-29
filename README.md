@@ -76,20 +76,7 @@ sudo make install
 
 ## 3 Bluetooth prerequisites
 
-`sudo nano /lib/systemd/system/bluealsa.service`
-
-Add the following lines:
-
-```
-Description=BluezALSA proxy
-Requires=bluetooth.service
-After=bluetooth.service
-
-[Service]
-Type=simple
-User=root
-ExecStart=/usr/bin/bluealsa -p a2dp-source -p a2dp-sink
-```
+Copy the `systemd-services/bluealsa.service` file from this repo to `/lib/systemd/system/bluealsa.service`
 
 In order to start the service automatically after reboot and after the Bluetooth hardware is set up:
 
@@ -142,29 +129,17 @@ Now enter the Bluetooth PIN and confirm. Enter the PIN on the target device (e.g
 
 Start the audio device: `bluealsa-aplay 00:00:00:00:00:00`
 
-Playing audio on the connected device should work now. Defaults to the Pi's HDMI output.
+Playing audio on the connected device should work now. Defaults to the Pi's HDMI output. You may now exit the player with Ctrl + C.
 
-To automatically start the audio player after reboot:
+To automatically start the audio player after reboot copy the `systemd-services/bluealsa-aplay.service` file from this repo to `/lib/systemd/system/bluealsa-aplay.service`
 
-`sudo nano /lib/systemd/system/bluealsa-aplay.service`
-
-Add the following lines:
+Activate the service:
 
 ```
-Description=BluezALSA aplay service
-Requires=bluealsa.service
-After=bluealsa.service
-
-[Service]
-Type=simple
-User=root
-ExecStart=bluealsa-aplay 00:00:00:00:00:00
-
-[Install]
-WantedBy=multi-user.target
+sudo systemctl daemon-reload
+sudo systemctl enable bluealsa-aplay.service
+sudo systemctl start bluealsa-aplay.service
 ```
-
-Activate the service: `sudo systemctl enable bluealsa-aplay.service`
 
 ## Automatic input change of sound system on device connect
 
@@ -182,21 +157,7 @@ pip3 install pyudev
 sudo nano /lib/systemd/system/switch-avr-input.service
 ```
 
-Add the following lines:
-
-```
-[Unit]
-Description=AVR Input Switcher based on Bluetooth connections
-After=multi-user.target
-
-[Service]
-Type=simple
-User=pi
-ExecStart=/usr/bin/python3 /home/pi/switch-avr-input.py
-
-[Install]
-WantedBy=multi-user.target
-```
+Copy the `systemd-services/switch-avr-input.service` file from this repo to `/lib/systemd/system/switch-avr-input.service`
 
 Activate the service:
 
@@ -233,7 +194,7 @@ AVR or other sound system related:
 
 - Use Bluetooth hardware volume changes on connected device to trigger AVR volume via REST
 - Switch on AVR after Bluetooth device connected if it was off before
-
+- Allow other devices (than the already trusted) to connect headless
 
 ## Contributing
 
