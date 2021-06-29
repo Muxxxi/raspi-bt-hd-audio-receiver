@@ -154,7 +154,6 @@ chmod +x switch-avr-input.py
 sudo apt install python3-pip
 pip3 install requests
 pip3 install pyudev
-sudo nano /lib/systemd/system/switch-avr-input.service
 ```
 
 Copy the `systemd-services/switch-avr-input.service` file from this repo to `/lib/systemd/system/switch-avr-input.service`
