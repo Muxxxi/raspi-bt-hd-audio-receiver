@@ -141,7 +141,7 @@ sudo systemctl enable bluealsa-aplay.service
 sudo systemctl start bluealsa-aplay.service
 ```
 
-## Automatic input change of sound system on device connect
+## 6 Automatic input change of sound system on device connect
 
 In my case it makes life easier to automatically switch the input of the sound system (AVR which has a REST-API) when a Bluetooth device connects and switch back to the old input after it disconnected. Feel free to skip this step or alter it to control your own sound system. Using HDMI-CEC with cec-client could also be an alternative.
 
