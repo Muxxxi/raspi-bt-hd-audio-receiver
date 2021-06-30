@@ -82,12 +82,7 @@ sudo make install
 
 In order to start the service automatically after reboot and after the Bluetooth hardware is set up:
 
-```
-cd /etc/udev/rules.d/
-sudo nano 100-bluealsa.rules
-```
-
-Add the following line: `ACTION=="add", KERNEL=="hci0", ENV{SYSTEMD_WANTS}+="bluealsa.service"`
+`sudo cp ~/raspi-bt-hd-audio-receiver/udev-rules/100-bluealsa.rules /etc/udev/rules.d/100-bluealsa.rules`
 
 Give Bluetooth permission to the pi user: `sudo adduser pi bluetooth`
 
