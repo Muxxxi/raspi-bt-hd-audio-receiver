@@ -20,6 +20,8 @@ Basic explanations and terminal commands are following. Sometimes adjusting comm
 ```
 sudo apt update
 sudo apt upgrade
+sudo apt install git
+git clone https://codeberg.org/epinez/raspi-bt-hd-audio-receiver.git ~/raspi-bt-hd-audio-receiver
 sudo nano /etc/machine-info
 PRETTY_HOSTNAME=<YOUR-DESIRED-BLUETOOTH-NAME>
 sudo reboot
@@ -29,13 +31,13 @@ sudo reboot
 
 Bluealsa and its command line utilities are there for the Bluetooth connection and the Bluetooth audio playability. Outputting the sound to HDMI is default.
 
-Helpful informationen: https://github.com/Arkq/bluez-alsa/wiki/Installation-from-source
+Helpful information: https://github.com/Arkq/bluez-alsa/wiki/Installation-from-source
 
 In order to support some codecs (AAC and apt-X / HD) for license reasons you need to compile these dependencies from source, adjust some build parameters for bluealsa and compile that from source, too (See 2.2 and 2.3).
 
 ### 2.1 Dependencies from official repository
 
-`sudo apt install git automake build-essential libtool pkg-config python-docutils libasound2-dev libbluetooth-dev libdbus-1-dev libglib2.0-dev libsbc-dev cmake`
+`sudo apt install automake build-essential libtool pkg-config python-docutils libasound2-dev libbluetooth-dev libdbus-1-dev libglib2.0-dev libsbc-dev cmake`
 
 ### 2.2 AAC codec with fdk-aac
 
@@ -76,7 +78,7 @@ sudo make install
 
 ## 3 Bluetooth prerequisites
 
-Copy the `systemd-services/bluealsa.service` file from this repo to `/lib/systemd/system/bluealsa.service`
+`sudo cp ~/raspi-bt-hd-audio-receiver/systemd-services/bluealsa.service /lib/systemd/system/bluealsa.service`
 
 In order to start the service automatically after reboot and after the Bluetooth hardware is set up:
 
@@ -127,11 +129,11 @@ Now enter the Bluetooth PIN and confirm. Enter the PIN on the target device (e.g
 
 ## 5 Bluetooth Audio Playback
 
-Start the audio device: `bluealsa-aplay 00:00:00:00:00:00`
+Test the audio device: `bluealsa-aplay 00:00:00:00:00:00`
 
-Playing audio on the connected device should work now. Defaults to the Pi's HDMI output. You may now exit the player with Ctrl + C.
+Playing audio on the connected device should work now. Defaults to the Pi's HDMI output. You may now exit the player with Ctrl + C and automatically start the audio player after reboot by:
 
-To automatically start the audio player after reboot copy the `systemd-services/bluealsa-aplay.service` file from this repo to `/lib/systemd/system/bluealsa-aplay.service`
+`sudo cp ~/raspi-bt-hd-audio-receiver/systemd-services/bluealsa-aplay.service /lib/systemd/system/bluealsa-aplay.service`
 
 Activate the service:
 
@@ -145,25 +147,20 @@ sudo systemctl start bluealsa-aplay.service
 
 In my case it makes life easier to automatically switch the input of the sound system (AVR which has a REST-API) when a Bluetooth device connects and switch back to the old input after it disconnected. Feel free to skip this step or alter it to control your own sound system. Using HDMI-CEC with cec-client could also be an alternative.
 
-`cd ~`
-
-Add the `switch-avr-input.py` file from this repo.
-
 ```
-chmod +x switch-avr-input.py
-sudo apt install python3-pip
-pip3 install requests
-pip3 install pyudev
+chmod +x ~/raspi-bt-hd-audio-receiver/avr-manager.py
+sudo apt install python3-pip libsdl2-2.0-0 libsdl2-mixer-2.0-0
+pip3 install requests pyudev pygame
 ```
 
-Copy the `systemd-services/switch-avr-input.service` file from this repo to `/lib/systemd/system/switch-avr-input.service`
+`sudo cp ~/raspi-bt-hd-audio-receiver/systemd-services/avr-manager.service /lib/systemd/system/avr-manager.service`
 
 Activate the service:
 
 ```
 sudo systemctl daemon-reload
-sudo systemctl enable switch-avr-input.service
-sudo systemctl start switch-avr-input.service
+sudo systemctl enable avr-manager.service
+sudo systemctl start avr-manager.service
 ```
 
 ## 7 Deactivate Raspberry Pi LEDs

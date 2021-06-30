@@ -5,7 +5,7 @@ After=multi-user.target
 [Service]
 Type=simple
 User=pi
-ExecStart=/usr/bin/python3 /home/pi/switch-avr-input.py
+ExecStart=/usr/bin/python3 /home/pi/avr-manager.py
 
 [Install]
 WantedBy=multi-user.target
