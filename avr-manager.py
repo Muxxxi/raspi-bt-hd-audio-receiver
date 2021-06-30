@@ -11,6 +11,7 @@ from multiprocessing import Process
 url = 'http://Yamaha-AVR/YamahaRemoteControl/ctrl'
 get_info_xml = '<YAMAHA_AV cmd="GET"><Main_Zone><Basic_Status>GetParam</Basic_Status></Main_Zone></YAMAHA_AV>'
 switch_input_xml = '<?xml version="1.0" encoding="utf-8"?><YAMAHA_AV cmd="PUT"><Main_Zone><Input><Input_Sel>$INPUT$</Input_Sel></Input></Main_Zone></YAMAHA_AV>'
+switch_on_xml = '<?xml version="1.0" encoding="utf-8"?><YAMAHA_AV cmd="PUT"><Main_Zone><Power_Control><Power>On</Power></Power_Control></Main_Zone></YAMAHA_AV>'
 target_input = 'HDMI1'
 last_input_file_path = '/home/pi/last_input.txt'
 sound_file_connect_path = '/home/pi/raspi-bt-hd-audio-receiver/sounds/connected.mp3'
@@ -20,20 +21,22 @@ def switch_input(input_target):
 	payload = switch_input_xml.replace("$INPUT$", input_target)
 	res = requests.post(url, data = payload)
 
-def get_device_info():
-	return requests.post(url, data = get_info_xml)
-
-def get_current_input():
-	res = get_device_info().text
+def get_basic_status():
+	payload = requests.post(url, data = get_info_xml)
+	res = payload.text
 	parsed = ET.fromstring(res)
 	main_zone = parsed.find('Main_Zone')
 	basic_status = main_zone.find('Basic_Status')
+
 	inp = basic_status.find('Input')
 	input_sel = inp.find('Input_Sel')
-
 	current_input = input_sel.text
 
-	return current_input
+	power_control = basic_status.find('Power_Control')
+	power = power_control.find('Power')
+	current_power_status = power.text
+
+	return { 'input': current_input, 'power': current_power_status }
 
 def get_last_input():
 	f = open(last_input_file_path, 'r')
@@ -44,6 +47,9 @@ def set_last_input(inp):
 	f = open(last_input_file_path, 'w')
 	f.write(inp)
 	f.close()
+
+def switch_on():
+    requests.post(url, data = switch_on_xml)
 
 def play_sound(file):
 	pygame.mixer.init()
@@ -58,10 +64,17 @@ monitor.filter_by(subsystem='input')
 
 for device in iter(monitor.poll, None):
 	if device.action == 'add':
-		current_input = get_current_input()
+		basic_status = get_basic_status()
+		current_input = basic_status["input"]
+		power_state = basic_status["power"]
+
+		if power_state == 'Standby':
+			switch_on()
+
 		if current_input != target_input:
 			set_last_input(current_input)
 			switch_input(target_input)
+
 		Process(target=play_sound(sound_file_connect_path)).start()
 
 	if device.action == 'remove':

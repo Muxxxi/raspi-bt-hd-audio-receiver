@@ -4,7 +4,7 @@ Connect your sound system to Bluetooth devices. Control your sound system to swi
 
 Tested with a Raspberry Pi 2 and an old Bluetooth 2.0 receiver; works very well and reliable even with that old hardware.
 
-Important notice:
+**Important notice:**
 
 Using a newer Raspberry Pi is of course totally fine. But be aware that built in WiFi and Bluetooth are interferring so that you should either use the built in WiFi and an external Bluetooth dongle or use an ethernet connection to ensure a stutter free connection.
 
@@ -138,9 +138,16 @@ sudo systemctl enable bluealsa-aplay.service
 sudo systemctl start bluealsa-aplay.service
 ```
 
-## 6 Automatic input change of sound system on device connect
+## 6 Manage connected sound system
 
-In my case it makes life easier to automatically switch the input of the sound system (AVR which has a REST-API) when a Bluetooth device connects and switch back to the old input after it disconnected. Feel free to skip this step or alter it to control your own sound system. Using HDMI-CEC with cec-client could also be an alternative.
+In my case it makes life much easier to do some automation on the sound system side (AVR which has a REST-API) when a Bluetooth device connects and disconnects. Feel free to skip this step or alter the script to control your own sound system. Using HDMI-CEC with cec-client could also be an alternative.
+
+**Current Features (as of 01.07.2021):**
+
+- Make a simple sound on bluetooth connect / disconnect
+- Switch on after connecting bluetooth device if currently in standby
+- Switch to Raspberry Pi input after connecting bluetooth device
+- Switch back to last input after disconnecting bluetooth device
 
 ```
 chmod +x ~/raspi-bt-hd-audio-receiver/avr-manager.py
@@ -184,7 +191,6 @@ dtparam=eth1_led=4
 AVR or other sound system related:
 
 - Use Bluetooth hardware volume changes on connected device to trigger AVR volume via REST
-- Switch on AVR after Bluetooth device connected if it was off before
 - Allow other devices (than the already trusted) to connect headless
 
 ## Contributing
