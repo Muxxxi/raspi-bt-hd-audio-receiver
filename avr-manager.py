@@ -12,9 +12,9 @@ url = 'http://Yamaha-AVR/YamahaRemoteControl/ctrl'
 get_info_xml = '<YAMAHA_AV cmd="GET"><Main_Zone><Basic_Status>GetParam</Basic_Status></Main_Zone></YAMAHA_AV>'
 switch_input_xml = '<?xml version="1.0" encoding="utf-8"?><YAMAHA_AV cmd="PUT"><Main_Zone><Input><Input_Sel>$INPUT$</Input_Sel></Input></Main_Zone></YAMAHA_AV>'
 target_input = 'HDMI1'
-file_path = '~/last_input.txt'
-sound_file_connect_path = 'sounds/connected.mp3'
-sound_file_disconnect_path = 'sounds/disconnected.mp3'
+last_input_file_path = '/home/pi/last_input.txt'
+sound_file_connect_path = '/home/pi/raspi-bt-hd-audio-receiver/sounds/connected.mp3'
+sound_file_disconnect_path = '/home/pi/raspi-bt-hd-audio-receiver/sounds/disconnected.mp3'
 
 def switch_input(input_target):
 	payload = switch_input_xml.replace("$INPUT$", input_target)
@@ -36,12 +36,12 @@ def get_current_input():
 	return current_input
 
 def get_last_input():
-	f = open(file_path, 'r')
+	f = open(last_input_file_path, 'r')
 	first_line = f.readline().strip()
 	return first_line 
 
 def set_last_input(inp):
-	f = open(file_path, 'w')
+	f = open(last_input_file_path, 'w')
 	f.write(inp)
 	f.close()
 
