@@ -22,6 +22,9 @@ sudo apt update
 sudo apt upgrade
 sudo apt install git
 git clone https://codeberg.org/epinez/raspi-bt-hd-audio-receiver.git ~/raspi-bt-hd-audio-receiver
+cd ~/raspi-bt-hd-audio-receiver
+git submodule init
+git submodule update
 sudo nano /etc/machine-info
 PRETTY_HOSTNAME=<YOUR-DESIRED-BLUETOOTH-NAME>
 sudo reboot
