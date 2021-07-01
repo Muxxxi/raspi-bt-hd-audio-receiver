@@ -1,3 +1,12 @@
-[submodule "lan951x-led-ctl"] 
-  path = lan951x-led-ctl
-  url = https://familie-radermacher.ch/cgi/cgit/linux/lan951x-led-ctl.git
+[submodule "lan951x-led-ctl"]
+	path = lan951x-led-ctl
+	url = https://familie-radermacher.ch/cgi/cgit/linux/lan951x-led-ctl.git
+[submodule "fdk-aac"]
+	path = fdk-aac
+	url = https://github.com/mstorsjo/fdk-aac.git
+[submodule "libopenaptx"]
+	path = libopenaptx
+	url = https://github.com/pali/libopenaptx.git
+[submodule "bluez-alsa"]
+	path = bluez-alsa
+	url = https://github.com/Arkq/bluez-alsa.git

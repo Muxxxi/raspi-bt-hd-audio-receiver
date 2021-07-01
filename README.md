@@ -45,9 +45,7 @@ In order to support some codecs (AAC and apt-X / HD) for license reasons you nee
 ### 2.2 AAC codec with fdk-aac
 
 ```
-cd ~
-git clone https://github.com/mstorsjo/fdk-aac.git
-cd fdk-aac/
+cd ~/raspi-bt-hd-audio-receiver/fdk-aac/
 ./autogen.sh 
 mkdir build
 cd build
@@ -59,18 +57,14 @@ sudo cmake --install ./
 ### 2.3 APT-X and APT-X HD with libopenaptx
 
 ```
-cd ~
-git clone https://github.com/pali/libopenaptx.git
-cd libopenaptx/
+cd ~/raspi-bt-hd-audio-receiver/libopenaptx/
 sudo make install
 ```
 
 ### 2.4 Bluealsa
 
 ```
-cd ~
-git clone https://github.com/Arkq/bluez-alsa.git
-cd bluez-alsa
+cd ~/raspi-bt-hd-audio-receiver/bluez-alsa
 autoreconf --install --force
 mkdir build
 cd build
