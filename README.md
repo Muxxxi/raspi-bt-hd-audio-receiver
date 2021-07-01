@@ -181,17 +181,35 @@ dtparam=eth0_led=4
 dtparam=eth1_led=4
 ```
 
+Deactivating ethernet LEDs does only work with Raspberry 3 and above like that. Older Raspberrys need a specific tool for that.
+
+```
+sudo apt install libusb-1.0-0-dev
+cd ~/raspi-bt-hd-audio-receiver/lan951x-led-ctl
+make
+chmod +x lan951x-led-ctl
+sudo ./lan951x-led-ctl --fdx=0 --lnk=0 --spd=0
+```
+
+The program has to be started after every reboot, you can autostart it with:
+
+`sudo nano /etc/rc.local`
+
+Add the following above `exit 0`:
+
+`sudo /home/pi/raspi-bt-hd-audio-receiver/lan951x-led-ctl/lan951x-led-ctl --fdx=0 --lnk=0 --spd=0`
+
 ---
 
 ## Possible improvements
 
 - LDAC codec support for higher quality audio
 - Automate the steps above in a handy script with a few prompts
+- Allow other devices (than the already trusted) to connect headless
 
 AVR or other sound system related:
 
 - Use Bluetooth hardware volume changes on connected device to trigger AVR volume via REST
-- Allow other devices (than the already trusted) to connect headless
 
 ## Contributing
 
