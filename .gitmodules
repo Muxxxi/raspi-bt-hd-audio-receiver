@@ -1,0 +1,3 @@
+[submodule "lan951x-led-ctl"] 
+  path = lan951x-led-ctl
+  url = git://https://familie-radermacher.ch/cgi/cgit/linux/lan951x-led-ctl.git
