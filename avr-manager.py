@@ -49,7 +49,7 @@ def set_last_input(inp):
 	f.close()
 
 def switch_on():
-    requests.post(url, data = switch_on_xml)
+	requests.post(url, data = switch_on_xml)
 
 def play_sound(file):
 	pygame.mixer.init()
@@ -78,7 +78,8 @@ for device in iter(monitor.poll, None):
 		Process(target=play_sound(sound_file_connect_path)).start()
 
 	if device.action == 'remove':
-		current_input = get_current_input()
+		basic_status = get_basic_status()
+		current_input = basic_status["input"]
 		if current_input == target_input:
 			Process(target=play_sound(sound_file_disconnect_path)).start()
 			switch_input(get_last_input())

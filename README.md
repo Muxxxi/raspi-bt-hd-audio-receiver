@@ -19,16 +19,22 @@ Basic explanations and terminal commands are following. Sometimes adjusting comm
 
 ```
 sudo apt update
-sudo apt upgrade
-sudo apt install git
+sudo apt upgrade -y
+sudo apt install -y git
 git clone https://codeberg.org/epinez/raspi-bt-hd-audio-receiver.git ~/raspi-bt-hd-audio-receiver
 cd ~/raspi-bt-hd-audio-receiver
 git submodule init
 git submodule update
-sudo nano /etc/machine-info
-PRETTY_HOSTNAME=<YOUR-DESIRED-BLUETOOTH-NAME>
 sudo reboot
 ```
+
+In case you want to change your devices bluetooth name:
+
+`sudo nano /etc/machine-info`
+
+Add this line and change the name as you wish:
+
+`PRETTY_HOSTNAME=<YOUR-DESIRED-BLUETOOTH-NAME>`
 
 ## 2 Bluealsa (former "bluez-alsa")
 
@@ -36,11 +42,11 @@ Bluealsa and its command line utilities are there for the Bluetooth connection a
 
 Helpful information: https://github.com/Arkq/bluez-alsa/wiki/Installation-from-source
 
-In order to support some codecs (AAC and apt-X / HD) for license reasons you need to compile these dependencies from source, adjust some build parameters for bluealsa and compile that from source, too (See 2.2 and 2.3).
+In order to support some codecs (AAC and aptX / HD) for license reasons you need to compile these dependencies from source, adjust some build parameters for bluealsa and compile that from source, too (See 2.2 and 2.3).
 
 ### 2.1 Dependencies from official repository
 
-`sudo apt install automake build-essential libtool pkg-config python-docutils libasound2-dev libbluetooth-dev libdbus-1-dev libglib2.0-dev libsbc-dev cmake`
+`sudo apt install -y automake build-essential libtool pkg-config python-docutils libasound2-dev libbluetooth-dev libdbus-1-dev libglib2.0-dev libsbc-dev cmake`
 
 ### 2.2 AAC codec with fdk-aac
 
@@ -54,7 +60,7 @@ cmake --build . --config Release
 sudo cmake --install ./
 ```
 
-### 2.3 APT-X and APT-X HD with libopenaptx
+### 2.3 aptX and aptX HD with libopenaptx
 
 ```
 cd ~/raspi-bt-hd-audio-receiver/libopenaptx/
@@ -148,7 +154,7 @@ In my case it makes life much easier to do some automation on the sound system s
 
 ```
 chmod +x ~/raspi-bt-hd-audio-receiver/avr-manager.py
-sudo apt install python3-pip libsdl2-2.0-0 libsdl2-mixer-2.0-0
+sudo apt install -y python3-pip libsdl2-2.0-0 libsdl2-mixer-2.0-0
 pip3 install requests pyudev pygame
 ```
 
@@ -181,11 +187,10 @@ dtparam=eth1_led=4
 Deactivating ethernet LEDs does only work with Raspberry 3 and above like that. Older Raspberrys need a specific tool for that.
 
 ```
-sudo apt install libusb-1.0-0-dev
+sudo apt install -y libusb-1.0-0-dev
 cd ~/raspi-bt-hd-audio-receiver/lan951x-led-ctl
 make
 chmod +x lan951x-led-ctl
-sudo ./lan951x-led-ctl --fdx=0 --lnk=0 --spd=0
 ```
 
 The program has to be started after every reboot, you can autostart it with:
