@@ -4,6 +4,3 @@
 [submodule "libopenaptx"]
 	path = libopenaptx
 	url = https://github.com/pali/libopenaptx.git
-[submodule "bluez-alsa"]
-	path = bluez-alsa
-	url = https://github.com/Arkq/bluez-alsa.git
