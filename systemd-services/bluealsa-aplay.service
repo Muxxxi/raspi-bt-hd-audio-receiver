@@ -5,7 +5,7 @@ After=bluealsa.service
 [Service]
 Type=simple
 User=root
-ExecStart=bluealsa-aplay 00:00:00:00:00:00
+ExecStart=bluealsa-aplay -D plughw:1 00:00:00:00:00:00
 
 [Install]
 WantedBy=multi-user.target

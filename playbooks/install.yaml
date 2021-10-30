@@ -1,0 +1,124 @@
+---
+
+- hosts: all
+  tasks:
+    - name: update apt
+      apt:
+        update_cache: yes
+        name:
+          - git
+          - automake 
+          - build-essential
+          - libtool
+          - pkg-config
+          - python-docutils 
+          - libasound2-dev 
+          - libbluetooth-dev 
+          - libdbus-1-dev 
+          - libglib2.0-dev 
+          - libsbc-dev 
+          - cmake
+          - bluez-tools
+        state: present
+
+    - name: reboot
+      reboot:
+
+
+# Libopenaptx 
+    - name: Clone repository
+      git: 
+        repo: 'https://github.com/pali/libopenaptx.git'
+        dest: /srv/libopenaptx
+        version: '811bc18'
+
+    - name: 
+      community.general.make:
+        chdir: '/srv/libopenaptx'
+        target: install
+
+# Install Bluealsa
+    - name: Clone repository
+      git:
+        repo: 'https://github.com/Arkq/bluez-alsa.git'
+        dest: /srv/bluez-alsa
+        version: 'b09f373'
+
+    - name: autoreconf
+      command: 'autoreconf --install --force'
+      args:
+        chdir: /srv/bluez-alsa
+
+    - name: Creates build directory
+      file:
+        path: /srv/bluez-alsa/build
+        state: directory
+
+    - name: configure
+      command: '../configure --enable-ofono --enable-debug --enable-aptx --enable-aptx-hd --with-libopenaptx'
+      args:
+        chdir: /srv/bluez-alsa/build
+
+    - name: 
+      community.general.make:
+        chdir: '/srv/bluez-alsa/build'
+
+    - name: 
+      community.general.make:
+        chdir: '/srv/bluez-alsa/build'
+        target: install
+
+    - name: copying bluealsa service to remote
+      become: true 
+      copy:
+        src: ../systemd-services/bluealsa.service
+        dest: /lib/systemd/system/bluealsa.service
+        owner: root
+        group: root        
+        mode: 0644
+
+    - name: copying bluealsa udev rule to remote
+      become: true 
+      copy:
+        src: ../udev-rules/100-bluealsa.rules
+        dest: /etc/udev/rules.d/100-bluealsa.rules
+        owner: root
+        group: root        
+        mode: 0644
+
+    - name: adding existing user pi to group sudo
+      user:
+        name: pi
+        groups: bluetooth
+        append: yes
+
+    - name: Ensure sap plugin is off in bluetooth
+      ansible.builtin.lineinfile:
+        path: /lib/systemd/system/bluetooth.service
+        regexp: '^ExecStart='
+        line: 'ExecStart=/usr/lib/bluetooth/bluetoothd --noplugin=sap'
+
+    - name: Load bluealsa aplay service
+      ansible.builtin.systemd:
+        state: restarted
+        daemon_reload: yes
+        name: bluealsa.service
+        enabled: true
+
+# Bluealsa Aplay
+
+    - name: copying bluez-aplay service to remote
+      become: true 
+      copy:
+        src: ../systemd-services/bluealsa-aplay.service
+        dest: /lib/systemd/system/bluealsa-aplay.service
+        owner: root
+        group: root        
+        mode: 0644
+
+    - name: Load bluealsa aplay service
+      ansible.builtin.systemd:
+        state: restarted
+        daemon_reload: yes
+        name: bluealsa-aplay.service
+        enabled: true
