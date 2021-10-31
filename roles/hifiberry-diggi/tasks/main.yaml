@@ -1,0 +1,19 @@
+---
+
+- name: Create Alsa config
+  copy:
+    src: ../config-files/asound.conf
+    dest: /etc/asound.conf
+    mode: 0644
+
+- name: change boot config add diggi
+  lineinfile:
+    path: /boot/config.txt
+    line: dtoverlay=hifiberry-digi
+    state: present
+
+- name: remove line in config.txt
+  lineinfile:
+    path: /boot/config.txt
+    line: dtparam=audio=on
+    state: absent
