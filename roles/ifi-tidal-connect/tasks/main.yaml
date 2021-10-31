@@ -1,0 +1,6 @@
+---
+
+- name: Clone repository
+  shell: "curl -sSL https://raw.githubusercontent.com/shawaj/HiTide/main/install.sh | sudo bash"
+  register: cat
+- debug: var=cat.stdout_lines
