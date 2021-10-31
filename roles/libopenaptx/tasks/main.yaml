@@ -1,0 +1,12 @@
+---
+
+- name: Clone repository
+  git: 
+    repo: 'https://github.com/pali/libopenaptx.git'
+    dest: /srv/libopenaptx
+    version: '811bc18'
+
+- name: Install libopenaptx
+  community.general.make:
+    chdir: '/srv/libopenaptx'
+    target: install

@@ -5,7 +5,10 @@ After=bluealsa.service
 [Service]
 Type=simple
 User=root
-ExecStart=bluealsa-aplay -D plughw:1 00:00:00:00:00:00
+ExecStartPre=/bin/sleep 2
+ExecStart=/usr/bin/bluealsa-aplay --pcm-buffer-time=250000 00:00:00:00:00:00
+RestartSec=5
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

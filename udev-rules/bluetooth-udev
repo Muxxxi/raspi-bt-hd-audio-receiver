@@ -1,0 +1,12 @@
+#!/bin/bash
+if [[ ! $NAME =~ ^\"([0-9A-F]{2}[:-]){5}([0-9A-F]{2})\"$ ]]; then exit 0; fi
+
+action=$(expr "$ACTION" : "\([a-zA-Z]\+\).*")
+
+if [ "$action" = "add" ]; then
+    bluetoothctl discoverable off
+fi
+
+if [ "$action" = "remove" ]; then
+    bluetoothctl discoverable on
+fi

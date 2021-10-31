@@ -1,0 +1,95 @@
+---
+
+- name: update apt
+  apt:
+    update_cache: true
+    name:
+      - git
+      - automake
+      - build-essential
+      - libtool
+      - pkg-config
+      - python-docutils
+      - libasound2-dev
+      - libbluetooth-dev
+      - libdbus-1-dev
+      - libglib2.0-dev
+      - libsbc-dev
+      - bluez-tools
+    state: present
+
+- name: change boot config add diggi
+  lineinfile:
+    path: /boot/config.txt
+    line: "dtoverlay=disable-wifi"
+    state: present
+
+- name: change boot config add diggi
+  lineinfile:
+    path: /boot/config.txt
+    line: "{{ item }}"
+    state: present
+    insertafter: '\[pi4\]'
+  loop:
+    - dtparam=eth0_led=4
+    - dtparam=eth1_led=4
+    - dtparam=pwr_led_trigger=none
+    - dtparam=pwr_led_activelow=off
+
+- name: copy bluetooth config file
+  copy:
+    src: ../config-files/main.conf
+    dest: /etc/bluetooth/main.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Creates override directory
+  file:
+    path: /etc/systemd/system/bthelper@.service.d
+    state: directory
+    mode: 0644
+
+- name: copy bthelper override file
+  copy:
+    src: ../systemd-services/override.conf
+    dest: /etc/systemd/system/bthelper@.service.d/override.conf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: copy btagent systemd file
+  copy:
+    src: ../systemd-services/bt-agent@.service
+    dest: /etc/systemd/system/bt-agent@.service
+    mode: 0644
+    owner: root
+    group: root
+
+- name: copy udev script
+  copy:
+    src: ../udev-rules/bluetooth-udev
+    dest: /usr/local/bin/bluetooth-udev
+    mode: 0755
+    owner: root
+    group: root
+
+- name: copying bluealsa udev rule to remote
+  copy:
+    src: ../udev-rules/99-bluetooth-udev.rules
+    dest: /etc/udev/rules.d/99-bluetooth-udev.rules
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable bt-agent service
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: bt-agent@hci0.service
+    enabled: true
+
+- name: Enable Bluetooth service
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: bluetooth.service
+    enabled: true

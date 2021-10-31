@@ -1,0 +1,28 @@
+---
+
+- name: Clone repository
+  shell: "curl -sL https://dtcooper.github.io/raspotify/install.sh | sh"
+  register: cat
+- debug: var=cat.stdout_lines
+
+- name: adding existing user gpio to user raspotify
+  user:
+    name: raspotify
+    groups: gpio
+    append: true
+
+- name: setup raspotify config
+  copy:
+    content: |
+      DEVICE_NAME=raspotify
+      DEVICE_TYPE="speaker"
+      BITRATE="320"
+      VOLUME_ARGS="--initial-volume=75"
+    dest: /etc/default/raspotify
+
+- name: Enable raspotify service
+  ansible.builtin.systemd:
+    daemon_reload: true
+    state: restarted
+    name: raspotify.service
+    enabled: true

@@ -1,0 +1,74 @@
+---
+
+- name: Clone repository
+  git:
+    repo: 'https://github.com/Arkq/bluez-alsa.git'
+    dest: /srv/bluez-alsa
+    version: 'b09f373'
+
+- name: Run autoreconf
+  command: 'autoreconf --install --force'
+  args:
+    chdir: /srv/bluez-alsa
+
+- name: Creates build directory
+  file:
+    path: /srv/bluez-alsa/build
+    state: directory
+    mode: 0644
+
+- name: configure bluez alsa
+  command: '../configure --enable-ofono --enable-debug --enable-aptx --enable-aptx-hd --with-libopenaptx'
+  args:
+    chdir: /srv/bluez-alsa/build
+
+- name: Build Bluez alsa
+  community.general.make:
+    chdir: '/srv/bluez-alsa/build'
+
+- name: Bluez alsa make install
+  community.general.make:
+    chdir: '/srv/bluez-alsa/build'
+    target: install
+
+- name: copying bluealsa service to remote
+  copy:
+    src: ../systemd-services/bluealsa.service
+    dest: /lib/systemd/system/bluealsa.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: adding existing user pi to group sudo
+  user:
+    name: pi
+    groups: bluetooth
+    append: true
+
+- name: Ensure sap plugin is off in bluetooth
+  ansible.builtin.lineinfile:
+    path: /lib/systemd/system/bluetooth.service
+    regexp: '^ExecStart='
+    line: 'ExecStart=/usr/lib/bluetooth/bluetoothd --noplugin=sap'
+
+- name: Load bluealsa service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    name: bluealsa.service
+    enabled: true
+
+- name: copying bluez-aplay service to remote
+  copy:
+    src: ../systemd-services/bluealsa-aplay.service
+    dest: /lib/systemd/system/bluealsa-aplay.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Load bluealsa aplay service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    name: bluealsa-aplay.service
+    enabled: true

@@ -5,4 +5,6 @@ After=bluetooth.service
 [Service]
 Type=simple
 User=root
-ExecStart=/usr/bin/bluealsa -p a2dp-source -p a2dp-sink
+ExecStart=/usr/bin/bluealsa -i hci0 -p a2dp-sink
+RestartSec=5
+Restart=always
